@@ -1,35 +1,40 @@
-🧾 InnoVentory
+# 🧾 InnoVentory
 
 A smart, web-based inventory and business management system built for small and medium enterprises (SMEs).
 
-Python
+**Python**
+**Django**
+**MySQL**
 
-Django
+---
 
-MySQL
-
-📘 Overview
+## 📘 Overview
 
 InnoVentory simplifies inventory tracking, sales monitoring, and business record-keeping for SMEs.
 
 Key features:
 
-✅ Streamline daily operations
+* ✅ Streamline daily operations
+* 🧠 Reduce human error
+* 📊 Real-time data insights
+* 👥 Efficient user and role management
 
-🧠 Reduce human error
+---
 
-📊 Real-time data insights
+## 🛠 Local Setup (No .env)
 
-👥 Efficient user and role management
+Follow these steps to run InnoVentory locally using full settings in `settings.py`.
 
-🛠 Local Setup (No .env)
+### 1️⃣ Clone the Repository
 
-Follow these steps to run InnoVentory locally using full settings in settings.py.
-
-1️⃣ Clone the Repository
+```bash
 git clone https://github.com/<your-username>/innoventory.git
 cd innoventory
-2️⃣ Create and Activate Virtual Environment
+```
+
+### 2️⃣ Create and Activate Virtual Environment
+
+```bash
 # macOS/Linux
 python -m venv venv
 source venv/bin/activate
@@ -37,34 +42,48 @@ source venv/bin/activate
 # Windows
 python -m venv venv
 venv\Scripts\activate
-3️⃣ Install Dependencies
+```
+
+### 3️⃣ Install Dependencies
+
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-4️⃣ Setup MySQL Database
+```
+
+### 4️⃣ Setup MySQL Database
 
 Start MySQL server.
 
 Create the database:
 
+```sql
 CREATE DATABASE innoventory;
+```
 
 Example local credentials:
 
-Field	Value
-NAME	innoventory
-USER	root
-PASSWORD	123456
-HOST	localhost
-PORT	3306
-5️⃣ Generate Django Secret Key
+| Field    | Value       |
+| -------- | ----------- |
+| NAME     | innoventory |
+| USER     | root        |
+| PASSWORD | 123456      |
+| HOST     | localhost   |
+| PORT     | 3306        |
+
+### 5️⃣ Generate Django Secret Key
 
 Run:
 
+```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
 
 Copy the output and use it in your settings.
 
-6️⃣ Full settings.py Example (MySQL, no .env)
+### 6️⃣ Full `settings.py` Example (MySQL, no .env)
+
+```python
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -166,30 +185,38 @@ USE_I18N = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-7️⃣ Apply Migrations
+```
+
+### 7️⃣ Apply Migrations
+
+```bash
 python manage.py makemigrations
 python manage.py migrate
-8️⃣ Create Superuser
-python manage.py createsuperuser
-9️⃣ Run Development Server
-python manage.py runserver
+```
 
-Visit: http://127.0.0.1:8000
+### 8️⃣ Create Superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+### 9️⃣ Run Development Server
+
+```bash
+python manage.py runserver
+```
+
+Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
 
 ## 👥 Team Members
 
 **Michelle Marie P. Habon** — Business Analyst — [michellemarie.habon@cit.edu](mailto:michellemarie.habon@cit.edu)
-
 **Tovi Joshua J. Hermosisima** — Scrum Master — [tovijoshua.hermosisima@cit.edu](mailto:tovijoshua.hermosisima@cit.edu)
-
 **Ashley N. Igonia** — Product Owner — [ashley.igonia@cit.edu](mailto:ashley.igonia@cit.edu)
-
 **Kenn Xavier C. Dabon** — Developer — [kenn.dabon@cit.edu](mailto:kenn.dabon@cit.edu)
-
 **Shinely Marie R. Embalsado** — Developer — [shinelymarie.embalsado@cit.edu](mailto:shinelymarie.embalsado@cit.edu)
-
 **Michaela Ma. Alexa D. Estrera** — Lead Developer — [michaelamaalexa.estrera@cit.edu](mailto:michaelamaalexa.estrera@cit.edu)
 
 ---
-
-Deployed Link: https://innoventory.onrender.com
