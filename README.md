@@ -1,267 +1,180 @@
-# 🧾 InnoVentory
+🧾 InnoVentory
 
-> A smart, web-based inventory and business management system built for small and medium enterprises (SMEs).
-> 
+A smart, web-based inventory and business management system built for small and medium enterprises (SMEs).
 
-[Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
+Python
 
-[Django](https://img.shields.io/badge/Django-5.x-green?logo=django)
+Django
 
-[PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-blue?logo=postgresql)
+MySQL
 
-[Render](https://img.shields.io/badge/Deployed-Render-46b3e3?logo=render)
+📘 Overview
 
----
+InnoVentory simplifies inventory tracking, sales monitoring, and business record-keeping for SMEs.
 
-## 📘 Overview
+Key features:
 
-**InnoVentory** is a web-based system designed to simplify inventory tracking, sales monitoring, and business record-keeping for small and medium enterprises.
+✅ Streamline daily operations
 
-It integrates an intuitive user interface with a robust backend to:
+🧠 Reduce human error
 
-- ✅ Streamline daily operations
-- 🧠 Reduce human error
-- 📊 Provide real-time data insights
-- 👥 Manage users and roles efficiently
+📊 Real-time data insights
 
----
+👥 Efficient user and role management
 
-## 🧩 Tech Stack
+🛠 Local Setup (No .env)
 
-| Layer | Technology |
-| --- | --- |
-| **Frontend** | HTML, CSS, JavaScript |
-| **Backend** | Python (Django Framework) |
-| **Database** | PostgreSQL (Supabase) |
-| **Deployment** | [Render.com](http://render.com/) |
-| **Static Files** | WhiteNoise |
-| **WSGI Server** | Gunicorn |
+Follow these steps to run InnoVentory locally using full settings in settings.py.
 
----
+1️⃣ Clone the Repository
+git clone https://github.com/<your-username>/innoventory.git
+cd innoventory
+2️⃣ Create and Activate Virtual Environment
+# macOS/Linux
+python -m venv venv
+source venv/bin/activate
 
-## 🚀 Quick Deployment (Render + Supabase)
+# Windows
+python -m venv venv
+venv\Scripts\activate
+3️⃣ Install Dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+4️⃣ Setup MySQL Database
 
-### Prerequisites
+Start MySQL server.
 
-- GitHub repository with Django app
-- Supabase project (PostgreSQL)
-- [Render.com](http://render.com/) account
+Create the database:
 
-### 1. Environment Setup
+CREATE DATABASE innoventory;
 
-**requirements.txt:**
+Example local credentials:
 
-```
-Django>=4.2,<5.1
-gunicorn>=21.2
-whitenoise>=6.6
-dj-database-url>=2.2
-psycopg[binary]>=3.2
-python-dotenv>=1.0
+Field	Value
+NAME	innoventory
+USER	root
+PASSWORD	123456
+HOST	localhost
+PORT	3306
+5️⃣ Generate Django Secret Key
 
-```
+Run:
 
-**.env.example:**
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
-```
-# Django
-DJANGO_SECRET_KEY=replace-me
-DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=your-render-service.onrender.com,localhost,127.0.0.1
-DJANGO_CSRF_TRUSTED_ORIGINS=https://your-render-service.onrender.com
+Copy the output and use it in your settings.
 
-# Database (Supabase)
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DBNAME?sslmode=require
-
-# Security
-DJANGO_SECURE_SSL_REDIRECT=True
-
-```
-
-### 2. Django Configuration
-
-[**settings.py](http://settings.py/):**
-
-```python
-import os
+6️⃣ Full settings.py Example (MySQL, no .env)
 from pathlib import Path
-from dotenv import load_dotenv
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env in local dev only
-if os.environ.get("RENDER", "") != "true":
-    load_dotenv()
+# SECURITY
+SECRET_KEY = "paste-your-generated-secret-key-here"
+DEBUG = True
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key")
-DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
-
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
-
-# Database Configuration
-DATABASE_URL = os.environ.get("DATABASE_URL")
-DATABASES = {
-    "default": dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
-
-# Static Files (WhiteNoise)
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# Application definition
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "accounts",
+    "products",
+    "sales",
+    "suppliers",
+    "reports",
+    "django.contrib.humanize",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    # ... other middleware
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+ROOT_URLCONF = "innoventory.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.template.context_processors.debug",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "innoventory.wsgi.application"
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "innoventory",
+        "USER": "root",
+        "PASSWORD": "123456",
+        "HOST": "localhost",
+        "PORT": "3306",
+    }
+}
+
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+]
+
+# Static files
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Security
-if os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "True").lower() == "true":
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+# Authentication redirects
+LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+LOGIN_URL = "/accounts/login/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 
-```
+# Internationalization
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
 
-### 3. Build Script
-
-[**build.sh](http://build.sh/):**
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo "==> Installing dependencies"
-pip install --upgrade pip
-pip install -r requirements.txt
-
-echo "==> Running database migrations"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+7️⃣ Apply Migrations
 python manage.py makemigrations
-python manage.py migrate --noinput
-
-echo "==> Collecting static files"
-python manage.py collectstatic --noinput
-
-echo "==> Build complete"
-
-```
-
-Make executable: `chmod +x build.sh`
-
-### 4. Render Deployment
-
-1. **Create Web Service** on [Render.com](http://render.com/)
-2. **Connect GitHub repository**
-3. **Build Settings:**
-    - Build Command: `./build.sh`
-    - Start Command: `gunicorn your_project.wsgi:application`
-4. **Environment Variables:**
-    
-    ```
-    RENDER=true
-    DJANGO_SECRET_KEY=your-generated-secret-key
-    DJANGO_DEBUG=False
-    DJANGO_ALLOWED_HOSTS=your-service.onrender.com
-    DJANGO_CSRF_TRUSTED_ORIGINS=https://your-service.onrender.com
-    DATABASE_URL=your-supabase-connection-string
-    
-    ```
-    
-
-### 5. Supabase Connection
-
-**Use Connection Pooler (Recommended):**
-
-- Go to Supabase project → Settings → Database
-- Use **Pooler connection string**:
-    
-    ```
-    postgresql://postgres.[project-ref]:[password]@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require
-    
-    ```
-    
-
-**Direct Connection:**
-
-```
-postgresql://postgres.[project-ref]:[password]@db.[project-ref].supabase.co:5432/postgres?sslmode=require
-
-```
-
-**Key Points:**
-
-- Always include `?sslmode=require`
-- Pooler uses port `6543`, direct uses `5432`
-- Pooler handles many short connections better
-
----
-
-## 🛠 Local Development
-
-### 1️⃣ Clone the Repository
-
-```bash
-git clone <https://github.com/><your-repo>/innoventory.git
-cd innoventory
-
-```
-
-### 2️⃣ Create and Activate Virtual Environment
-
-```bash
-python -m venv venv
-venv\\Scripts\\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-
-```
-
-### 3️⃣ Install Dependencies
-
-```bash
-pip install -r requirements.txt
-
-```
-
-### 4️⃣ Configure Environment
-
-```bash
-cp .env.example .env
-# Edit .env with your local values
-
-```
-
-### 5️⃣ Run Migrations
-
-```bash
 python manage.py migrate
-
-```
-
-### 6️⃣ Create Superuser
-
-```bash
+8️⃣ Create Superuser
 python manage.py createsuperuser
-
-```
-
-### 7️⃣ Run Development Server
-
-```bash
+9️⃣ Run Development Server
 python manage.py runserver
 
-```
-
-Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000/)
-</details>
-
----
+Visit: http://127.0.0.1:8000
 
 ## 👥 Team Members
 
