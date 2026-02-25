@@ -18,7 +18,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = "jj0!$vxyhbd!e8ltb-a4iq9*$1sa-re9x0dc_cn($!afhcxzg*"
 DEBUG = True
 ALLOWED_HOSTS = [
     h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()
@@ -93,24 +93,24 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
-DATABASES = {
- "default": dj_database_url.config(
- default=DATABASE_URL,
- conn_max_age=60,
- ssl_require=True
- )
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'innoventory',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
+#  "default": dj_database_url.config(
+#  default=DATABASE_URL,
+#  conn_max_age=60,
+#  ssl_require=True
+#  )
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'innoventory',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
 
 
 # Password validation

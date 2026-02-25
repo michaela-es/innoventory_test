@@ -57,11 +57,19 @@ class InventorySettings(models.Model):
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
-    price = models.FloatField()
-    stock_quantity = models.IntegerField()
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=False, related_name='products')
+    price = models.FloatField(
+        validators=[MinValueValidator(1.00)]
+    )
+    stock_quantity = models.IntegerField(validators=[MinValueValidator(0)])
     date_modified = models.DateTimeField(auto_now=True)
-    supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='products')
+    supplier = models.ForeignKey(
+        'suppliers.Supplier',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products'
+    )
 
     is_tracked = models.BooleanField(default=False)
     max_stock_recorded = models.PositiveIntegerField(default=0)
@@ -76,7 +84,19 @@ class Product(models.Model):
 
     objects = ProductManager()
 
+
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if (self.low_threshold is not None and
+                self.medium_threshold is not None and
+                self.medium_threshold <= self.low_threshold):
+            raise ValidationError({
+                'medium_threshold': 'Medium threshold must be greater than low threshold'
+            })
+
     def save(self, *args, **kwargs):
+        self.full_clean()
         if self.stock_quantity > self.max_stock_recorded:
             self.max_stock_recorded = self.stock_quantity
         super().save(*args, **kwargs)
